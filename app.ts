@@ -1,4 +1,5 @@
 import { config as dotenvConfig } from 'dotenv';
+import cors from 'cors';
 import http from 'http';
 
 dotenvConfig()
@@ -16,6 +17,12 @@ import profileRouter from './routes/profile';
 
 var app: Express = express();
 
+var corsOptions = {
+  origin: ['https://rapsapp.in', "localhost", "127.0.0.1"],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors())
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
