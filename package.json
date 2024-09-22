@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "pnpm exec tsc -p tsconfig.json",
-    "start": "pnpm exec ts-node app.ts"
+    "build": "npm i && pnpm exec tsc -p tsconfig.json && cp -r .env templates dist/",
+    "start": "node dist/app.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

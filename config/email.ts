@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import process from 'process';
-import fs from 'fs';
+import { readFileSync } from 'fs';
 
+const passwordResetMail = new TextDecoder().decode(readFileSync(__dirname + "/../templates/passwordReset.html"))
 
 console.log(process.env.EMAIL_USERNAME);
 console.log(process.env.password);
@@ -15,7 +16,6 @@ var transporter = nodemailer.createTransport({
         }
 });
 
-const passwordResetMail = fs.readFileSync(__dirname + "/passwordReset.html", 'utf-8')
 
 export const sendOtp = (otp: string, recepient: string) => {
         var mailOptions = {
