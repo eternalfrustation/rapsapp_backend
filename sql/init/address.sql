@@ -1,0 +1,7 @@
+CREATE TABLE address (
+	id SERIAL PRIMARY KEY,
+	city TEXT NOT NULL,
+	district TEXT NOT NULL,
+	pin_code INTEGER NOT NULL,
+	town TEXT NOT NULL,
+)
