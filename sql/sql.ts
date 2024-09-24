@@ -18,6 +18,7 @@ export const users = {
         getHash: sql('users/getHash.sql'),
         setOtp: sql('users/setOtp.sql'),
         resetPassword: sql('users/resetPassword.sql'),
+	checkOtp: sql('users/checkOtp.sql')
 }
 
 export const profile = {
