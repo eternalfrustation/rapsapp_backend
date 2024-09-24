@@ -19,7 +19,10 @@ const checkBody = (body: any) =>
 const checkServiceBody = (body: any) =>
         body &&
         body.name &&
-        body.rate;
+        body.rate &&
+	body.working_days &&
+	body.working_hours_start &&
+	body.working_hours_end;
 
 const createProfile: RequestHandler = async (req, res) => {
         if (!res.locals.user) {
@@ -111,7 +114,7 @@ const addService: RequestHandler = async (req, res) => {
         if (!user_id) {
                 return res.status(400).end();
         }
-        await db.none(service.create, { user_id: user_id, name: req.body.name, rate: req.body.rate }).then(() => {
+        await db.none(service.create, { user_id: user_id, name: req.body.name, rate: req.body.rate, working_days: req.body.working_days, working_hours_start: req.body.working_hours_start, working_hours_end: req.body.working_hours_end }).then(() => {
                 res.status(200).end()
         }).catch((e) => {
                 console.error(e);
@@ -140,4 +143,4 @@ const getServices: RequestHandler = async (req, res) => {
 
 
 
-export { createProfile, getProfile, setProfilePhoto, getProfilePhoto , addService, getServices};
+export { createProfile, getProfile, setProfilePhoto, getProfilePhoto, addService, getServices };
