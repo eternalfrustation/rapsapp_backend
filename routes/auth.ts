@@ -13,7 +13,7 @@ router.put("/sign_in", express.json(), signIn);
 router.post("/sign_up", express.json(), signUp);
 router.post("/google", express.json(), google);
 router.post("/new_otp", express.json(), requestOTP);
-router.post("/verifyOtp", express.json(), verifyOTP);
+router.post("/verify_otp", express.json(), verifyOTP);
 router.post("/reset_password", express.json(), resetPassword);
 router.get('/', function (req, res) {
         res.send("auth");
