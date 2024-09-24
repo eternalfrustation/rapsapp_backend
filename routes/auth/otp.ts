@@ -13,7 +13,7 @@ const checkRequestBody = function (body: any) {
 const checkOTPReq = (body: any) => {
         return body &&
                 typeof body.email === "string" &&
-                typeof body.otp === "number";
+                typeof body.otp === "string";
 
 }
 
