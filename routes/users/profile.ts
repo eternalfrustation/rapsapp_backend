@@ -1,6 +1,9 @@
 import { RequestHandler } from "express";
+import { Storage } from "@google-cloud/storage";
 import { profile, users } from "../../sql/sql";
 import db from "../../config/db";
+
+const storage = new Storage();
 
 const checkBody = (body: any) =>
         body &&
@@ -63,4 +66,35 @@ const getProfile: RequestHandler = async (req, res) => {
         })
 };
 
-export { createProfile, getProfile };
+const setProfilePhoto: RequestHandler = async (req, res) => {
+
+        if (!res.locals.user) {
+                return res.status(401).send("Unauthorized")
+        }
+        if (!req.is("application/octet-stream")) {
+                return res.status(415).end();
+        }
+        const user_id = await db.one(users.findByMail, { email: res.locals.user.email }).then((u) => u && u.id).catch(() => { });
+        if (!user_id) {
+                return res.status(400).end();
+        }
+        const fileRef = storage.bucket("rapsapp_user_images").file(user_id)
+        req.pipe(fileRef.createWriteStream())
+}
+
+const getProfilePhoto: RequestHandler = async (req, res) => {
+
+        if (!res.locals.user) {
+                return res.status(401).send("Unauthorized")
+        }
+        const user_id = await db.one(users.findByMail, { email: res.locals.user.email }).then((u) => u && u.id).catch(() => { });
+        if (!user_id) {
+                return res.status(400).end();
+        }
+        const fileRef = storage.bucket("rapsapp_user_images").file(user_id)
+	res.header("Content-Type", "application/octet-stream")
+	fileRef.createReadStream().pipe(res)
+}
+
+
+export { createProfile, getProfile, setProfilePhoto, getProfilePhoto };

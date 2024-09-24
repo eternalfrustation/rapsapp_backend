@@ -14,6 +14,7 @@ import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 import usersRouter from './routes/users';
 import profileRouter from './routes/profile';
+import bodyParser from 'body-parser';
 
 var app: Express = express();
 

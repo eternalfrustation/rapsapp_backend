@@ -1,10 +1,9 @@
 import express from 'express';
 const router = express.Router();
 import auth from "../middlewares/auth";
+import getUserInfo from "./users/info";
 
 /* GET users listing. */
-router.get('/', auth, function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', auth, getUserInfo);
 
 export default router;
