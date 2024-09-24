@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import { Storage } from "@google-cloud/storage";
-import { profile, users } from "../../sql/sql";
+import { profile, service, users } from "../../sql/sql";
 import db from "../../config/db";
 
 const storage = new Storage();
@@ -15,6 +15,11 @@ const checkBody = (body: any) =>
         body.account_number &&
         body.branch &&
         body.ifsc;
+
+const checkServiceBody = (body: any) =>
+        body &&
+        body.name &&
+        body.rate;
 
 const createProfile: RequestHandler = async (req, res) => {
         if (!res.locals.user) {
@@ -83,7 +88,6 @@ const setProfilePhoto: RequestHandler = async (req, res) => {
 }
 
 const getProfilePhoto: RequestHandler = async (req, res) => {
-
         if (!res.locals.user) {
                 return res.status(401).send("Unauthorized")
         }
@@ -92,9 +96,48 @@ const getProfilePhoto: RequestHandler = async (req, res) => {
                 return res.status(400).end();
         }
         const fileRef = storage.bucket("rapsapp_user_images").file(user_id)
-	res.header("Content-Type", "application/octet-stream")
-	fileRef.createReadStream().pipe(res)
+        res.header("Content-Type", "application/octet-stream")
+        fileRef.createReadStream().pipe(res)
+}
+
+const addService: RequestHandler = async (req, res) => {
+        if (!checkServiceBody(req.body)) {
+                return res.status(400).end()
+        }
+        if (!res.locals.user) {
+                return res.status(401).send("Unauthorized")
+        }
+        const user_id = await db.one(users.findByMail, { email: res.locals.user.email }).then((u) => u && u.id).catch((e) => { console.error(e) });
+        if (!user_id) {
+                return res.status(400).end();
+        }
+        await db.none(service.create, { user_id: user_id, name: req.body.name, rate: req.body.rate }).then(() => {
+                res.status(200).end()
+        }).catch((e) => {
+                console.error(e);
+                res.status(400).end()
+        })
+}
+
+const getServices: RequestHandler = async (req, res) => {
+        if (!checkServiceBody(req.body)) {
+                return res.status(400).end()
+        }
+        if (!res.locals.user) {
+                return res.status(401).send("Unauthorized")
+        }
+        const user_id = await db.one(users.findByMail, { email: res.locals.user.email }).then((u) => u && u.id).catch((e) => { console.error(e) });
+        if (!user_id) {
+                return res.status(400).end();
+        }
+        await db.manyOrNone(service.get, { user_id: user_id }).then((d) => {
+                res.status(200).send(d)
+        }).catch((e) => {
+                console.error(e);
+                res.status(400).end()
+        })
 }
 
 
-export { createProfile, getProfile, setProfilePhoto, getProfilePhoto };
+
+export { createProfile, getProfile, setProfilePhoto, getProfilePhoto , addService, getServices};

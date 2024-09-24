@@ -24,3 +24,8 @@ export const profile = {
         create: sql('profile/createProfile.sql'),
 	get: sql('profile/getProfile.sql')
 }
+
+export const service = {
+	create: sql('service/create.sql'),
+	get: sql('service/get.sql'),
+}
